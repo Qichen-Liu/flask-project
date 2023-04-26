@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Rate Songs{% endblock %}
+{% block content %}
+    <br/>
+    <h2>You can search for songs </h2>
+    <br/>
+    <form method="POST">
+        <input type="hidden" name="post_id" value="1">
+        <div class="form-group">
+            <label for="title">title</label>
+            <input
+                    type="title"
+                    class="form-control"
+                    id="title"
+                    name="title"
+                    placeholder="Enter song title"
+            />
+        </div>
+        </br>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+
+    </br>
+    <h2>Here are the search results:</h2>
+    </br>
+    <!-- search_results.html -->
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 20px;
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+    <table>
+        <thead>
+        <tr>
+            <th>SongID</th>
+            <th>Title</th>
+            <th>Artist Name</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Review</th>
+            <th>Rate</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for song in songs %}
+            <tr>
+                <td>{{ song['songID'] }}</td>
+                <td>{{ song['title'] }}</td>
+                <td>{{ song['fname'] + ' ' +  song['lname'] }}</td>
+                <td>{{ song['albumID'] }}</td>
+                <td>{{ song['genre'] }}</td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="post_id" value="2">
+                        <input type="hidden" name="song_id" value={{ song['songID'] }}>
+                        <div class="form-group">
+                            <input
+                                    type="reviewText"
+                                    class="form-control"
+                                    id="reviewText"
+                                    name="reviewText"
+                                    placeholder="Enter comments"
+                            />
+                        </div>
+                        </br>
+                        <button type="submit" class="btn btn-primary">Review</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="post_id" value="3">
+                        <input type="hidden" name="song_id" value={{ song['songID'] }}>
+                        <div class="form-group">
+                            <input
+                                    type="stars"
+                                    class="form-control"
+                                    id="stars"
+                                    name="stars"
+                                    placeholder="Enter rating stars"
+                            />
+                        </div>
+                        </br>
+                        <button type="submit" class="btn btn-primary">Rate</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

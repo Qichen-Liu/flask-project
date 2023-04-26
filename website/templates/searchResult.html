@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Search Result{% endblock %}
+{% block content %}
+</br>
+<h2>Here are the search results:</h2>
+</br>
+<!-- search_results.html -->
+<style>
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 20px;
+  vertical-align: middle;
+  text-align: center;
+}
+</style>
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Artist Name</th>
+            <th>Album</th>
+            <th>Genre</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for song in songs %}
+            <tr>
+                <td>{{ song['title'] }}</td>
+                <td>{{ song['fname'] + ' ' +  song['lname']}}</td>
+                <td>{{ song['albumID'] }}</td>
+                <td>{{ song['genre'] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

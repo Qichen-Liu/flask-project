@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Friends{% endblock %}
+{% block content %}
+    <br/>
+    <h2>You can search for a user by username</h2>
+    <br/>
+    <form method="POST">
+        <input type="hidden" name="post_id" value="1">
+        <div class="form-group">
+            <label for="username">username</label>
+            <input
+                    type="username"
+                    class="form-control"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+            />
+        </div>
+        </br>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+
+    </br>
+    <h2>Here are the search results:</h2>
+    </br>
+    <!-- search_results.html -->
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 20px;
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Nickname</th>
+            <th>Friend</th>
+            <th>Follow</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u['username'] }}</td>
+                <td>{{ u['fname'] }}</td>
+                <td>{{ u['lname'] }}</td>
+                <td>{{ u['nickname'] }}</td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="post_id" value="2">
+                        <input type="hidden" name="user_id" value={{ u['username'] }}>
+
+                        </br>
+                        <button type="submit" class="btn btn-primary">Add friend</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="post_id" value="3">
+                        <input type="hidden" name="user_id" value={{ u['username'] }}>
+
+                        </br>
+                        <button type="submit" class="btn btn-primary">Follow</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
