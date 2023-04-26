@@ -40,6 +40,20 @@
                 <a class="nav-item nav-link" id="newContent" href="/new-content">New-Content</a>
                 <a class="nav-item nav-link" id="Friends" href="/friends">Friends</a>
                 <a class="nav-item nav-link" id="RateSong" href="/rate">Rate Songs</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <img src="/static/images/profile-icon.png" alt="User Profile Icon"
+                             class="img-fluid rounded-circle" style="height: 30px;">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="/profile">Profile</a>
+                        <a class="dropdown-item" href="/friends">Friends</a>
+                        <a class="dropdown-item" href="/followers">Followers</a>
+                    </div>
+                </li>
+
             {% else %}
                 <a class="nav-item nav-link" id="login" href="/login">Login</a>
                 <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign-Up</a>
