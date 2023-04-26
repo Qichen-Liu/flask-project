@@ -6,6 +6,7 @@ from flask_login import login_user, login_required, logout_user, current_user, L
 
 auth = Blueprint('auth', __name__)
 
+# test for push
 # GET request: retrieve info
 # POST request: make some change to the database
 
