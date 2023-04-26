@@ -3,6 +3,9 @@
 {% block content %}
 </br>
 <h2>Here are the search results:</h2>
+<h3>genre: {{genre}}</h3>
+<h3>avgRating: {{avgRating}}</h3>
+<h3>artistName: {{artistName}}</h3>
 </br>
 <!-- search_results.html -->
 <style>
@@ -16,26 +19,36 @@ th, td {
   vertical-align: middle;
   text-align: center;
 }
+
+
+
+
 </style>
-<table>
-    <thead>
-        <tr>
+<div id="Nameresult">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr class="juicy-peach-gradient ">
             <th>Title</th>
             <th>Artist Name</th>
             <th>Album</th>
             <th>Genre</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         {% for song in songs %}
-            <tr>
-                <td>{{ song['title'] }}</td>
-                <td>{{ song['fname'] + ' ' +  song['lname']}}</td>
-                <td>{{ song['albumID'] }}</td>
-                <td>{{ song['genre'] }}</td>
-            </tr>
+        <tr>
+            <td>{{ song['title'] }}</td>
+            <td>{{ song['fname'] + ' ' + song['lname']}}</td>
+            <td>{{ song['albumID'] }}</td>
+            <td>{{ song['genre'] }}</td>
+        </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-{% endblock %}
+    <li class="nav-item"><a class="nav-item nav-link" id="home" href="/home">
+        <button class="btn morpheus-den-gradient">More search</button>
+    </a></li>
+</div>
+
+ {% endblock %}
