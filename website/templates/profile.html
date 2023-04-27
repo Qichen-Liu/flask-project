@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Friends{% endblock %}
+{% block title %}Profile{% endblock %}
 {% block content %}
 <style>
           @import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
@@ -129,7 +129,7 @@
                     </a></li>
                     {% else %}
                     <li class="nav-item" style="margin-right: auto"><a class="nav-item nav-link">
-                        <button class="btn heavy-rain-gradient btn-sm disabled" onclick="show_request()">No New
+                        <button class="btn heavy-rain-gradient btn-sm disabled">No New
                             request
                         </button>
                     </a></li>
@@ -228,10 +228,10 @@
 
         if (request_table.style.display == "none") {
             request_table.style.display = "block";
-            request_btn.label = "Hide requests"
+            request_btn.innerHTML = 'Hide requests'
         } else {
             request_table.style.display = "none";
-            request_btn.label= "New request"
+            request_btn.innerHTML = 'New request'
         }
     }
     function response() {
