@@ -120,3 +120,20 @@ create table userFanOfArtist (
     foreign key (username) references user(username) on delete cascade,
     foreign key (artistID) references artist(artistID) on delete cascade
 );
+
+CREATE TABLE playlist (
+    listID varchar(10) not null,
+    listName varchar(255) not null,
+    createdAt datetime,
+    createdBy varchar(10) not null,
+  	primary key(listID),
+    foreign key (createdBy) references user(username) on delete cascade
+);
+
+CREATE TABLE songInPlaylist (
+    listID varchar(10) not null,
+    songID varchar(10) not null,
+  	primary key(listID, songID),
+    foreign key (listID) references playlist(listID) on delete cascade,
+    foreign key (songID) references song(songID) on delete cascade
+);

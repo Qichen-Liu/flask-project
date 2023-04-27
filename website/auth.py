@@ -695,3 +695,27 @@ def followers():
                 return render_template('follower.html', user=current_user, followings=followings, followers=followers)
 
     return render_template('follower.html', user=current_user, followings=followings, followers=followers)
+
+@auth.route('/playlist', methods=['POST', 'GET'])
+@login_required
+def playlist():
+    username = current_user.id
+    cursor = conn.cursor()
+    # query current followers and followings
+    query = 'SELECT listID, listName, createdAT FROM playlist WHERE createdBy = %s'
+    cursor.execute(query, (username))
+    my_playlists = cursor.fetchall()
+
+    if request.method == 'POST':
+        post_id = request.form['post_id']
+
+        # if user want to see the songs
+        if post_id == '1':
+            list_ID = request.form['list_id']
+            song_query = 'SELECT title, releaseDate, songURL ' \
+                         'FROM playlist NATURAL JOIN songInPlaylist NATURAL JOIN song ' \
+                         'WHERE createdBy = %s AND listID = %s'
+            cursor.execute(song_query, (username, list_ID))
+
+
+    return render_template('playlist.html', user=current_user, playlists=my_playlists)

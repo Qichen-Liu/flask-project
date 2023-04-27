@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}PlayList{% endblock %}
+{% block content %}
+
+    <br/>
+    <h2>Your PlayLists</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>PlayList ID</th>
+            <th>PlayList Name</th>
+            <th>Check Songs</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for playlist in playlists %}
+            <tr>
+                <td>{{ playlist['listID'] }}</td>
+                <td>{{ playlist['listName'] }}</td>
+                <form method="POST">
+                        <input type="hidden" name="post_id" value="1">
+                        <input type="hidden" name="list_id" value={{ playlist['listID'] }}>
+
+                        </br>
+                        <button type="submit" class="btn btn-primary">Display</button>
+                    </form>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
