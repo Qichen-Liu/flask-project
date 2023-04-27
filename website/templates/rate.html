@@ -2,6 +2,12 @@
 {% block title %}Rate Songs{% endblock %}
 {% block content %}
 <br/>
+<form method="POST" style="">
+    <input type="hidden" name="post_id" value="4">
+    <div style="display: flex; justify-content: right;" class="button-container">
+        <button type="submit" class="btn tempting-azure-gradient">My review & rating</button>
+    </div>
+</form>
 <form method="POST">
     <h3 align="center">Search Songs to Rate</h3>
     <div class="form-group">
@@ -22,11 +28,11 @@
 </form>
 
 <br/>
-{% if songs is not none %}
+{% if songs is defined %}
 
 <h2>Here are the search results:</h2>
 </br>
-<!-- search_results.html -->
+
 <style>
         table {
           border-collapse: collapse;
@@ -90,12 +96,6 @@
         </tbody>
     </table>
 </div>
-<form method="POST" style="">
-    <input type="hidden" name="post_id" value="4">
-    <div style="display: flex; justify-content: right;" class="button-container">
-        <button type="submit" class="btn tempting-azure-gradient">My review & rating</button>
-    </div>
-</form>
 
 <script>
             document.getElementById('comment').addEventListener('click', function() {

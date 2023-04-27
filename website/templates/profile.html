@@ -1,92 +1,247 @@
 {% extends "base.html" %}
 {% block title %}Friends{% endblock %}
 {% block content %}
+<style>
+          @import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
+        *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          list-style: none;
+          font-family: 'Josefin Sans', sans-serif;
+        }
+        body {
+          font-family: Arial, Helvetica, sans-serif;
+        }
 
-    </br>
-    <h2>This is your profile:</h2>
-    </br>
-    <!-- search_results.html -->
-    <style>
+        /* Float four columns side by side */
+        .column {
+          float: left;
+          width: 50%;
+          padding: 0 10px;
+        }
+
+        /* Remove extra left and right margins, due to padding in columns */
+        .row {margin: 0 -5px;}
+
+        /* Clear floats after the columns */
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        /* Style the counter cards */
+        .card {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
+          padding: 16px;
+          text-align: center;
+          background-color: #f1f1f1;
+        }
+
+        /* Responsive columns - one column layout (vertical) on small screens */
+        @media screen and (max-width: 600px) {
+          .column {
+            width: 100%;
+            display: block;
+            margin-bottom: 20px;
+          }
+        }
+        .avatar img {
+            border-radius: 50%;
+            width: 160px;
+            height: 160px;
+            margin-top: 5%;
+            object-fit: cover;
+            object-position: 0 0px;
+        }
         table {
-
-            border-collapse: collapse;
+          border-collapse: collapse;
         }
 
         th, td {
-            border: 1px solid black;
-            padding: 20px;
-            vertical-align: middle;
-            text-align: center;
+
+          border: 1px solid black;
+          padding: 20px;
+          vertical-align: middle;
+          text-align: center;
         }
-    </style>
-    <table>
-        <thead>
-        <tr>
-            <th>Username</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Nickname</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>{{ profile['username'] }}</td>
-            <td>{{ profile['fname'] }}</td>
-            <td>{{ profile['lname'] }}</td>
-            <td>{{ profile['nickname'] }}</td>
-        </tr>
-        </tbody>
-    </table>
 
-    <br/>
-    <h2>Your friends</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Friend username</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for friend in friends %}
-            <tr>
-                <td>{{ friend['friend'] }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
-    <br/>
-    <h2>Your followings</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>following username</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for following in followings %}
-            <tr>
-                <td>{{ following['follows'] }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
-    <br/>
-    <h2>Your followers</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>followers username</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for follower in followers %}
-            <tr>
-                <td>{{ follower['follower'] }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
+</style>
+
+</br>
+</br>
+
+<div class="jumbotron rare-wind-gradient">
+    <div style="display: flex;  align-items: center;">
+        <h3>Hi, {{ profile['username'] }}!</h3>
+        <li class="nav-item" style="margin-left: auto"><a class="nav-item nav-link" id="" href="">
+            <button class="btn deep-blue-gradient btn-sm">Edit my profile</button>
+        </a></li>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="column" style="width: 35%;">
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark"></thead>
+                <tbody>
+                <tr>
+                    <td style="border: none;">Last Name</td>
+                    <td style="border: none;">{{ profile['fname'] }}</td>
+                </tr>
+                <tr>
+                    <td style="border: none;">First name</td>
+                    <td style="border: none;">{{ profile['lname'] }}</td>
+                </tr>
+                <tr>
+                    <td style="border: none;">Nickname</td>
+                    <td style="border: none;">{{ profile['nickname'] }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="column" style="width: 55%;  margin-left: auto;">
+            <div class="card">
+                <table class="table table-striped table-hover">
+                    <h3>Friends</h3>
+                    <hr>
+                    {% if friends|length > 0 %}
+                    <tbody>
+                    {% for friend in friends %}
+                    <tr style="border: none;">
+                        <td style="border: none;">{{ friend['friend'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <h6>You have no friend yet</h6>
+                    {% endif %}
+                </table>
+                <div style="display: flex;  align-items: center;">
+                    {% if friend_request|length > 0 %}
+                    <li class="nav-item" style="margin-right: auto"><a class="nav-item nav-link">
+                        <button class="btn ripe-malinka-gradient btn-sm" onclick="show_request()" id="request_btn">New
+                            request
+                        </button>
+                    </a></li>
+                    {% else %}
+                    <li class="nav-item" style="margin-right: auto"><a class="nav-item nav-link">
+                        <button class="btn heavy-rain-gradient btn-sm disabled" onclick="show_request()">No New
+                            request
+                        </button>
+                    </a></li>
+                    {% endif %}
+
+                    <li class="nav-item" style="margin-left: auto"><a class="nav-item nav-link" id="friend"
+                                                                      href="/friends">
+                        <button class="btn warm-flame-gradient btn-sm">Add Friend/Follow</button>
+                    </a></li>
+                </div>
+                <div id="request_table" style="display: none;">
+                    <table class="table table-striped table-hover" style="width: 100%;">
+                        <thead class="thead-dark" style="width: 100%;">
+                        <tr>
+                            <th>Request sent by</th>
+                            <th>Accept</th>
+                            <th>Deny</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for request in friend_request %}
+                        <tr>
+                            <td><h3>{{ request['user'] }}</h3></td>
+                            <td style=" padding:10px;">
+                                <form method="POST">
+                                    <input type="hidden" name="post_id" value="1">
+                                    <input type="hidden" name="RequestSendBy" value={{ request['user'] }}>
+                                    <button type="submit" class="btn btn-success btn-sm" onclick="response()" id="accept">Accept</button>
+                                </form>
+                            </td>
+                            <td style=" padding:10px;">
+                                <form method="POST">
+                                    <input type="hidden" name="post_id" value="2">
+                                    <input type="hidden" name="RequestSendBy" value={{ request['user'] }}>
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="response()" id="deny">Deny</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="card ">
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <h2>Followings</h2>
+                <hr>
+                <table class="table table-hover">
+                    {% if followings|length > 0 %}
+                    <tbody>
+                    {% for following in followings %}
+                    <tr style="border: none;">
+                        <td style="border: none;">{{ following['follows'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <h6>You have no following yet</h6>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <div class="column">
+            <div class="card">
+                <h2>Follower</h2>
+                <hr>
+                <table class="table table-striped table-hover">
+                    {% if followers|length > 0 %}
+                    <tbody>
+                    {% for follower in followers %}
+                    <tr style="border: none;">
+                        <td style="border: none;">{{ follower['follower'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <h6>You have no followers yet</h6>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function show_request() {
+        var request_table = document.getElementById("request_table");
+        var request_btn = document.getElementById("request_btn");
+
+        if (request_table.style.display == "none") {
+            request_table.style.display = "block";
+            request_btn.label = "Hide requests"
+        } else {
+            request_table.style.display = "none";
+            request_btn.label= "New request"
+        }
+    }
+    function response() {
+        var accept = document.getElementById("accept");
+        var deny = document.getElementById("deny");
+
+        accept.class="btn btn-secondary disabled";
+        deny.class="btn btn-secondary disabled";
+
+    }
+</script>
 
 {% endblock %}

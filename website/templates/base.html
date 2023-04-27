@@ -90,9 +90,17 @@ myVideo {
   min-width: 100%;
   min-height: 100%;
 }
+table {
+  border-collapse: collapse;
+}
 
-
-
+th, td {
+  border: 1px solid black;
+  padding: 20px;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 25px;
+}
 </style>
 
 <body>
@@ -118,18 +126,21 @@ myVideo {
                 <a class="nav-item nav-link" id="RateSong" href="/rate">Rate Songs</a>
             </li>
             {% endif %}
+            <li class="nav-item ">
+                <a class="nav-item nav-link" id="about" href="/about">About</a>
+            </li>
         </ul>
         <ul class="nav justify-content-center">
             {% if user.is_authenticated %}
             <li class="dropdown" style="display: flex; justify-content: center; align-items: center;">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                <button class="btn purple-gradient dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{user.id}}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="/profile">Profile</a>
                     <a class="dropdown-item" href="/friends">Friends</a>
-                    <a class="dropdown-item" href="/followers">Followers</a>
+<!--                    <a class="dropdown-item" href="/followers">Followers</a>-->
                 </div>
             </li>
             <li class="nav-item"><a class="nav-item nav-link" id="logout" href="/logout">
