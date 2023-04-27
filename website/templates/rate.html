@@ -1,99 +1,117 @@
 {% extends "base.html" %}
 {% block title %}Rate Songs{% endblock %}
 {% block content %}
+<br/>
+<form method="POST">
+    <h3 align="center">Search Songs to Rate</h3>
+    <div class="form-group">
+        <label for="title">Song title</label>
+        <input
+                type="title"
+                class="form-control"
+                id="title"
+                name="title"
+                placeholder="Enter song title"
+        />
+    </div>
     <br/>
-    <h2>You can search for songs </h2>
-    <br/>
-    <form method="POST">
-        <input type="hidden" name="post_id" value="1">
-        <div class="form-group">
-            <label for="title">title</label>
-            <input
-                    type="title"
-                    class="form-control"
-                    id="title"
-                    name="title"
-                    placeholder="Enter song title"
-            />
-        </div>
-        </br>
+    <input type="hidden" name="post_id" value="1">
+    <div style="display: flex; justify-content: center;" class="button-container">
         <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+    </div>
 
+</form>
 
-    </br>
-    <h2>Here are the search results:</h2>
-    </br>
-    <!-- search_results.html -->
-    <style>
+<br/>
+{% if songs is not none %}
+
+<h2>Here are the search results:</h2>
+</br>
+<!-- search_results.html -->
+<style>
         table {
-            border-collapse: collapse;
+          border-collapse: collapse;
         }
 
         th, td {
-            border: 1px solid black;
-            padding: 20px;
-            vertical-align: middle;
-            text-align: center;
+          border: 1px solid black;
+          padding: 20px;
+          vertical-align: middle;
+          text-align: center;
         }
-    </style>
-    <table>
-        <thead>
-        <tr>
-            <th>SongID</th>
+</style>
+
+<div id="Nameresult">
+
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr class="juicy-peach-gradient ">
             <th>Title</th>
-            <th>Artist Name</th>
-            <th>Album</th>
-            <th>Genre</th>
-            <th>Review</th>
-            <th>Rate</th>
+            <th>Song ID</th>
+            <th>Artist</th>
+            <th>Comment</th>
+            <th>Stars</th>
         </tr>
         </thead>
         <tbody>
         {% for song in songs %}
-            <tr>
-                <td>{{ song['songID'] }}</td>
-                <td>{{ song['title'] }}</td>
-                <td>{{ song['fname'] + ' ' +  song['lname'] }}</td>
-                <td>{{ song['albumID'] }}</td>
-                <td>{{ song['genre'] }}</td>
-                <td>
-                    <form method="POST">
-                        <input type="hidden" name="post_id" value="2">
-                        <input type="hidden" name="song_id" value={{ song['songID'] }}>
-                        <div class="form-group">
-                            <input
-                                    type="reviewText"
-                                    class="form-control"
-                                    id="reviewText"
-                                    name="reviewText"
-                                    placeholder="Enter comments"
-                            />
-                        </div>
-                        </br>
-                        <button type="submit" class="btn btn-primary">Review</button>
-                    </form>
-                </td>
-                <td>
-                    <form method="POST">
-                        <input type="hidden" name="post_id" value="3">
-                        <input type="hidden" name="song_id" value={{ song['songID'] }}>
-                        <div class="form-group">
-                            <input
-                                    type="stars"
-                                    class="form-control"
-                                    id="stars"
-                                    name="stars"
-                                    placeholder="Enter rating stars"
-                            />
-                        </div>
-                        </br>
-                        <button type="submit" class="btn btn-primary">Rate</button>
-                    </form>
-                </td>
-            </tr>
+        <tr>
+            <td>{{ song['title'] }}</td>
+            <td>{{ song['songID'] }}</td>
+            <td>{{ song['fname'] + ' ' + song['lname']}}</td>
+            <td>
+                <button type="button" class="btn dusty-grass-gradient" id="comment" onclick="buttonClicked()">Comment
+                </button>
+                <form method="POST" post_id="2" style="display: flex;align-items: center;">
+                    <input name="reviewText" type="reviewText" id="reviewText" placeholder="Enter your text here"
+                           style="width: 100%;display: none;"/>
+                    <input type="hidden" name="post_id" value="2">
+                    <input type="hidden" name="song_id" value="{{ song['songID'] }}">
+                    <button type="submit" class="btn mean-fruit-gradient" id="comment_submit"
+                            onclick="buttonClicked()" style="display: none;">Submit
+                    </button>
+
+                </form>
+            </td>
+            <td>
+                <button type="button" class="btn deep-blue-gradient" id="rate" onclick="buttonClicked()">Rate</button>
+                <form method="POST" post_id="3" style="display: flex;align-items: center;">
+
+                    <input name="stars" type="stars" id="stars" placeholder="Enter your text here"
+                           style="width: 100%;display: none;"/>
+                    <input type="hidden" name="post_id" value="3">
+                    <input type="hidden" name="song_id" value="{{ song['songID'] }}">
+                    <button type="submit" class="btn mean-fruit-gradient" id="rate_submit"
+                            onclick="buttonClicked()" style="display: none;">Submit
+                    </button>
+                </form>
+            </td>
+        </tr>
         {% endfor %}
         </tbody>
     </table>
+</div>
+<form method="POST" style="">
+    <input type="hidden" name="post_id" value="4">
+    <div style="display: flex; justify-content: right;" class="button-container">
+        <button type="submit" class="btn tempting-azure-gradient">My review & rating</button>
+    </div>
+</form>
 
+<script>
+            document.getElementById('comment').addEventListener('click', function() {
+                this.style.display = 'none';
+                document.getElementById('reviewText').style.display = 'block';
+                document.getElementById('comment_submit').style.display = 'block';
+
+            });
+
+            document.getElementById('rate').addEventListener('click', function() {
+                this.style.display = 'none';
+                document.getElementById('stars').style.display = 'block';
+                document.getElementById('rate_submit').style.display = 'block';
+
+            })
+</script>
+{% endif %}
 {% endblock %}
