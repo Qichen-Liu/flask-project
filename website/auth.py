@@ -13,10 +13,10 @@ auth = Blueprint('auth', __name__)
 # config the database
 conn = pymysql.Connect(
     host="localhost",
-    port=3306,
+    port=8889,
     user="root",
-    password="t00d00",
-    db="cs6083",
+    password="root",
+    db="FatEar",
     charset="utf8mb4",
     cursorclass=pymysql.cursors.DictCursor
 )
@@ -791,3 +791,5 @@ def playlist():
 
 
     return render_template('playlist.html', user=current_user, playlists=my_playlists)
+
+
