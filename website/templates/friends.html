@@ -24,13 +24,33 @@
     <table>
         <thead>
         <tr>
-            <th>Username</th>
+            <th>Request sent by</th>
+            <th>Accept</th>
+            <th>Deny</th>
         </tr>
         </thead>
         <tbody>
-        {% for friend in friends %}
+        {% for request in friend_request %}
             <tr>
-                <td>{{ friend['friend'] }}</td>
+                <td>{{ request['user'] }}</td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="post_id" value="3">
+                        <input type="hidden" name="RequestSendBy" value={{ request['user'] }}>
+
+                        </br>
+                        <button type="submit" class="btn btn-primary">Accept</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST">
+                        <input type="hidden" name="post_id" value="4">
+                        <input type="hidden" name="RequestSendBy" value={{ request['user'] }}>
+
+                        </br>
+                        <button type="submit" class="btn btn-primary">Deny</button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

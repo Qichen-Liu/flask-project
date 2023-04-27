@@ -434,6 +434,7 @@ def rate():
                 return render_template('rate.html', user=current_user)
     return render_template('rate.html', user=current_user)
 
+
 @auth.route('/friends', methods=['GET', 'POST'])
 @login_required
 def friends():
@@ -451,27 +452,26 @@ def friends():
                            'UNION SELECT user1 AS user FROM friend ' \
                            'WHERE user2 = %s AND requestSentBy != %s AND acceptStatus = %s'
     cursor.execute(friend_request_query, (username, username, 'Pending', username, username, 'Pending'))
-    friend_request_result = cursor.fetchone()
-
-
-
+    friend_request_result = cursor.fetchall()
 
     if request.method == 'POST':
         post_id = request.form['post_id']
 
-        # search user to add friend or follow
+        # search user to add friend
         if post_id == '1':
             username = request.form.get('username')
             if not username:
                 flash('Username cannot be blank!', category='error')
-                return render_template('friends.html', user=current_user, friends=user_friends)
+                return render_template('friends.html', user=current_user, friends=user_friends,
+                                       friend_request=friend_request_result)
 
             cursor = conn.cursor()
             query = 'SELECT username, fname, lname, nickname FROM user WHERE username = %s'
             cursor.execute(query, (username))
             users = cursor.fetchall()
             if users:
-                return render_template('friends.html', users=users, user=current_user, friends=user_friends)
+                return render_template('friends.html', users=users, user=current_user, friends=user_friends,
+                                       friend_request=friend_request_result)
             else:
                 flash('No user found! Please change the username!', category='error')
 
@@ -490,7 +490,8 @@ def friends():
 
             if users:
                 flash('You are already friends', 'error')
-                return render_template('friends.html', user=current_user, friends=user_friends)
+                return render_template('friends.html', user=current_user, friends=user_friends,
+                                       friend_request=friend_request_result)
             else:
                 # need to send a request, update database
                 # add a feature to look at the request
@@ -510,7 +511,8 @@ def friends():
 
                     if friend_status == 'Pending':
                         flash('You have already sent the friend request', 'error')
-                        return render_template('friends.html', user=current_user, friends=user_friends)
+                        return render_template('friends.html', user=current_user, friends=user_friends,
+                                               friend_request=friend_request_result)
                     elif friend_status == 'Denied':
                         # update status to Pending again
                         set_pending_request = 'UPDATE friend SET acceptStatus = %s, updatedAt = %s ' \
@@ -519,11 +521,13 @@ def friends():
                         # update the status at current time
                         now = datetime.datetime.now()
                         formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
-                        cursor.execute(set_pending_request, ('Pending', formatted_time, username, friend, friend, username))
+                        cursor.execute(set_pending_request,
+                                       ('Pending', formatted_time, username, friend, friend, username))
                         conn.commit()
                         cursor.close()
                         flash('Friend request send successfully', 'success')
-                        return render_template('friends.html', user=current_user, friends=user_friends)
+                        return render_template('friends.html', user=current_user, friends=user_friends,
+                                               friend_request=friend_request_result)
                 else:
                     # insert a new friend request
                     send_new_request = 'INSERT INTO friend VALUES(%s, %s, %s, %s, %s, NULL)'
@@ -533,14 +537,76 @@ def friends():
                     conn.commit()
                     cursor.close()
                     flash('Friend request send successfully', 'success')
-                    return render_template('friends.html', user=current_user, friends=user_friends)
+                    return render_template('friends.html', user=current_user, friends=user_friends,
+                                           friend_request=friend_request_result)
 
+        # accept request
+        elif post_id == '3':
+            requestSentBy = request.form['RequestSendBy']
 
-                # update status to become/deny friend request
-                accept_request = 'UPDATE friend SET acceptStatus = Accepted, updatedAt = %s WHERE friend.user1 = %s AND friend.user2 = %s'
-                deny_request = 'UPDATE friend SET acceptStatus = Denied, updatedAt = %s WHERE friend.user1 = %s AND friend.user2 = %s'
+            # update status to become/deny friend request
+            accept_request = 'UPDATE friend SET acceptStatus = %s, updatedAt = %s ' \
+                             'WHERE (friend.user1 = %s AND friend.user2 = %s AND friend.requestSentBy = %s) ' \
+                             'OR (friend.user1 = %s AND friend.user2 = %s AND friend.requestSentBy = %s)'
+            now = datetime.datetime.now()
+            formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute(accept_request, (
+            'Accepted', formatted_time, username, requestSentBy, requestSentBy, requestSentBy, username, requestSentBy))
+            conn.commit()
+            cursor.close()
+            flash('You and ' + requestSentBy + ' are now friends!', 'success')
 
-    return render_template('friends.html', user=current_user, friends=user_friends)
+            cursor = conn.cursor()
+            friends_query = 'SELECT user2 AS friend FROM friend ' \
+                            'WHERE user1 = %s AND acceptStatus = %s ' \
+                            'UNION SELECT user1 AS friend FROM friend ' \
+                            'WHERE user2 = %s AND acceptStatus = %s'
+            cursor.execute(friends_query, (username, 'Accepted', username, 'Accepted'))
+            user_friends = cursor.fetchall()
+
+            friend_request_query = 'SELECT user2 AS user FROM friend ' \
+                                   'WHERE user1 = %s AND requestSentBy != %s AND acceptStatus = %s ' \
+                                   'UNION SELECT user1 AS user FROM friend ' \
+                                   'WHERE user2 = %s AND requestSentBy != %s AND acceptStatus = %s'
+            cursor.execute(friend_request_query, (username, username, 'Pending', username, username, 'Pending'))
+            friend_request_result = cursor.fetchall()
+
+            return render_template('friends.html', user=current_user, friends=user_friends,
+                                   friend_request=friend_request_result)
+
+            # deny request
+        elif post_id == '4':
+            requestSentBy = request.form['RequestSendBy']
+
+            # update status to become/deny friend request
+            accept_request = 'UPDATE friend SET acceptStatus = %s, updatedAt = %s ' \
+                             'WHERE (friend.user1 = %s AND friend.user2 = %s AND friend.requestSentBy = %s) ' \
+                             'OR (friend.user1 = %s AND friend.user2 = %s AND friend.requestSentBy = %s)'
+            now = datetime.datetime.now()
+            formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute(accept_request, ('Denied', formatted_time, username, requestSentBy, requestSentBy, requestSentBy, username, requestSentBy))
+            conn.commit()
+            cursor.close()
+            flash('You have denied the friend request sent by ' + requestSentBy, 'warning')
+
+            cursor = conn.cursor()
+            friends_query = 'SELECT user2 AS friend FROM friend ' \
+                            'WHERE user1 = %s AND acceptStatus = %s ' \
+                            'UNION SELECT user1 AS friend FROM friend ' \
+                            'WHERE user2 = %s AND acceptStatus = %s'
+            cursor.execute(friends_query, (username, 'Accepted', username, 'Accepted'))
+            user_friends = cursor.fetchall()
+
+            friend_request_query = 'SELECT user2 AS user FROM friend ' \
+                                   'WHERE user1 = %s AND requestSentBy != %s AND acceptStatus = %s ' \
+                                   'UNION SELECT user1 AS user FROM friend ' \
+                                   'WHERE user2 = %s AND requestSentBy != %s AND acceptStatus = %s'
+            cursor.execute(friend_request_query, (username, username, 'Pending', username, username, 'Pending'))
+            friend_request_result = cursor.fetchall()
+
+            return render_template('friends.html', user=current_user, friends=user_friends, friend_request=friend_request_result)
+    return render_template('friends.html', user=current_user, friends=user_friends, friend_request=friend_request_result)
+
 
 @auth.route('/profile')
 @login_required
@@ -564,6 +630,7 @@ def profile():
     followers = cursor.fetchall()
     return render_template('profile.html', profile=user_profile, friends=user_friends,
                            followings=followings, followers=followers, user=current_user)
+
 
 @auth.route('/followers', methods=['GET', 'POST'])
 @login_required
@@ -594,7 +661,8 @@ def followers():
             cursor.execute(query, (username))
             users = cursor.fetchall()
             if users:
-                return render_template('follower.html', users=users, user=current_user, followings=followings, followers=followers)
+                return render_template('follower.html', users=users, user=current_user, followings=followings,
+                                       followers=followers)
             else:
                 flash('No user found! Please change the username!', category='error')
         # follow users
