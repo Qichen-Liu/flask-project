@@ -67,7 +67,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
@@ -86,7 +86,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
@@ -103,7 +103,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
@@ -122,7 +122,7 @@ def searchSong():
             # stores the results in song
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
@@ -142,7 +142,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
@@ -158,7 +158,7 @@ def searchSong():
             # stores the results in songs
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
@@ -177,7 +177,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user, genre=genre,
+                return render_template("home.html", songs=songs, user=current_user, genre=genre,
                                        avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
