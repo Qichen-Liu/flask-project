@@ -2,12 +2,78 @@
 {% block title %}Rate Songs{% endblock %}
 {% block content %}
 <br/>
-<form method="POST" style="">
-    <input type="hidden" name="post_id" value="4">
-    <div style="display: flex; justify-content: right;" class="button-container">
-        <button type="submit" class="btn tempting-azure-gradient">My review & rating</button>
+
+<div style="display: flex; justify-content: right;" class="button-container">
+    <button type="submit" class="btn tempting-azure-gradient" onclick="show_rates_review()" id="rates_review_btn">My
+        review & rating
+    </button>
+</div>
+<div id="rates_review_table" style="display: none;">
+    <div class="table-container" style="display: flex;">
+        <div class="table-wrapper" style=" width: 45%;">
+            <h3>Rate</h3>
+            {% if rates|length > 0 %}
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                <tr class="juicy-peach-gradient ">
+                    <th>Title</th>
+                    <th>Stars</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rate in rates %}
+                <tr>
+                    <td>{{ rate['title'] }}</td>
+                    <td>{{ rate['stars'] }}</td>
+                </tr>
+                {% endfor%}
+                </tbody>
+            </table>
+            {% else %}
+                <h6 style="text-align: center;">You have no rate yet</h6>
+            {% endif %}
+        </div>
+        <div class="table-wrapper" style=" width: 45%; margin-left: auto;">
+            <h3>Review</h3>
+            {% if reviews|length > 0 %}
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                <tr class="juicy-peach-gradient">
+                    <th>Title</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td>{{ review['title'] }}</td>
+                    <td>{{ review['reviewText'] }}</td>
+                </tr>
+                {% endfor%}
+                </tbody>
+            </table>
+            {% else %}
+                 <h6 style="text-align: center;">You have no review yet</h6>
+            {% endif %}
+        </div>
     </div>
-</form>
+</div>
+
+<script>
+             function show_rates_review() {
+                var rates_review_table = document.getElementById("rates_review_table");
+                var rates_review_btn = document.getElementById("rates_review_btn");
+
+                if (rates_review_table.style.display == "none") {
+                    rates_review_table.style.display = "block";
+                    rates_review_btn.innerHTML = 'Hide'
+                } else {
+                    rates_review_table.style.display = "none";
+                    rates_review_btn.innerHTML = 'My review & rating'
+                }
+            }
+</script>
+<br/>
 <form method="POST">
     <h3 align="center">Search Songs to Rate</h3>
     <div class="form-group">
@@ -32,19 +98,6 @@
 
 <h2>Here are the search results:</h2>
 </br>
-
-<style>
-        table {
-          border-collapse: collapse;
-        }
-
-        th, td {
-          border: 1px solid black;
-          padding: 20px;
-          vertical-align: middle;
-          text-align: center;
-        }
-</style>
 
 <div id="Nameresult">
 
@@ -111,6 +164,7 @@
                 document.getElementById('rate_submit').style.display = 'block';
 
             })
+
 </script>
 {% endif %}
 {% endblock %}

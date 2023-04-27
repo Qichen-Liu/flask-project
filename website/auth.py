@@ -13,10 +13,10 @@ auth = Blueprint('auth', __name__)
 # config the database
 conn = pymysql.Connect(
     host="localhost",
-    port=8889,
+    port=3306,
     user="root",
-    password="root",
-    db="FatEar",
+    password="t00d00",
+    db="cs6083",
     charset="utf8mb4",
     cursorclass=pymysql.cursors.DictCursor
 )
@@ -344,6 +344,18 @@ def newContent():
 @auth.route('/rate', methods=['GET', 'POST'])
 @login_required
 def rate():
+    cursor = conn.cursor()
+    # select to see if user already reviewed this song
+    query = 'SELECT user.username, reviewSong.songID, song.title, reviewSong.reviewText FROM song Join reviewSong ON ' \
+            'song.songID = reviewSong.songID JOIN user ON reviewSong.username = user.username WHERE user.username = %s'
+    cursor.execute(query, (current_user.id))
+    reviews = cursor.fetchall()
+
+    query = 'SELECT user.username, ratesong.songID, song.title, ratesong.stars FROM song Join ratesong ON song.songID ' \
+            '= ratesong.songID JOIN user ON ratesong.username = user.username WHERE user.username = %s'
+    cursor.execute(query, (current_user.id))
+    rates = cursor.fetchall()
+
     if request.method == 'POST':
         post_id = request.form['post_id']
         if post_id == '1':
@@ -378,8 +390,8 @@ def rate():
             # select to see if user already reviewed this song
             query = 'SELECT user.username, reviewSong.songID ' \
                     'FROM reviewSong JOIN user ON reviewSong.username = user.username ' \
-                    'WHERE user.username = %s'
-            cursor.execute(query, (current_user.id))
+                    'WHERE user.username = %s AND rateSong.songID = %s'
+            cursor.execute(query, (current_user.id, songID))
             reviews = cursor.fetchall()
             if reviews:
                 flash('You already left a review for this song. The previous review will be overwritten', 'warning')
@@ -410,8 +422,8 @@ def rate():
             cursor = conn.cursor()
             query = 'SELECT user.username, reviewSong.songID ' \
                     'FROM ratesong JOIN user ON ratesong.username = user.username ' \
-                    'WHERE user.username = %s'
-            cursor.execute(query, (current_user.id))
+                    'WHERE user.username = %s AND reviewSong.songID = %s'
+            cursor.execute(query, (current_user.id, songID))
             rates = cursor.fetchall()
             if rates:
                 flash('You already left a review for this song. The previous review will be overwritten', 'warning')
@@ -429,7 +441,7 @@ def rate():
                 flash('Thank you for the rating!', category='success')
                 return render_template('rate.html', user=current_user)
 
-    return render_template('rate.html', user=current_user)
+    return render_template('rate.html', user=current_user, rates=rates, reviews=reviews)
 
 
 @auth.route('/friends', methods=['GET', 'POST'])
@@ -569,13 +581,13 @@ def friends():
                 cursor.close()
                 flash('You are following ' + followee, 'success')
                 return render_template('friends.html', user=current_user, friends=user_friends,
-                           friend_request=friend_request_result)
+                                       friend_request=friend_request_result)
 
     return render_template('friends.html', user=current_user, friends=user_friends,
                            friend_request=friend_request_result)
 
 
-@auth.route('/profile',methods=['GET', 'POST'])
+@auth.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     username = current_user.id
@@ -656,7 +668,8 @@ def profile():
             now = datetime.datetime.now()
             formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute(accept_request, (
-            'Denied', formatted_time, username, requestSentBy, requestSentBy, requestSentBy, username, requestSentBy))
+                'Denied', formatted_time, username, requestSentBy, requestSentBy, requestSentBy, username,
+                requestSentBy))
             conn.commit()
             cursor.close()
             flash('You have denied the friend request sent by ' + requestSentBy, 'warning')
@@ -681,7 +694,8 @@ def profile():
                                    friend_request=friend_request_result)
     print(user_friends)
     return render_template('profile.html', profile=user_profile, friends=user_friends,
-                           followings=followings, followers=followers, user=current_user, friend_request= friend_request_result)
+                           followings=followings, followers=followers, user=current_user,
+                           friend_request=friend_request_result)
 
 
 @auth.route('/followers', methods=['GET', 'POST'])
