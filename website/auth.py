@@ -13,10 +13,10 @@ auth = Blueprint('auth', __name__)
 # config the database
 conn = pymysql.Connect(
     host="localhost",
-    port=8889,
+    port=3306,
     user="root",
-    password="root",
-    db="FatEar",
+    password="t00d00",
+    db="cs6083",
     charset="utf8mb4",
     cursorclass=pymysql.cursors.DictCursor
 )
@@ -69,7 +69,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -87,7 +87,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -103,7 +103,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -121,7 +121,7 @@ def searchSong():
             # stores the results in song
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -140,7 +140,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -155,7 +155,7 @@ def searchSong():
             # stores the results in songs
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -173,7 +173,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("searchResult.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
