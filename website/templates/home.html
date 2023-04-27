@@ -1,45 +1,77 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    <br />
-    <h1>This is the home page.</h1>
-    <br />
-    <h2>You can search for songs </h2>
-    This will find the titles, artists, and albums of songs of a particular genre and/or with an average rating above some threshold and/or by a particular artist.
-    <br />
-    <br />
-    <form method="POST">
+<br/>
+<br/>
+<h2>You can search for songs </h2>
+This will find the titles, artists, and albums of songs of a particular genre and/or with an average rating above some threshold and/or by a particular artist.
+<br/>
+<br/>
+<form method="POST">
     <div class="form-group">
         <label for="genre">Genre (e.g. pop)</label>
         <input
-          type="genre"
-          class="form-control"
-          id="genre"
-          name="genre"
-          placeholder="Enter genre"
+                type="genre"
+                class="form-control"
+                id="genre"
+                name="genre"
+                placeholder="Enter genre"
         />
     </div>
     <div class="form-group">
         <label for="avgRating">Average Rating (e.g. 4.0)</label>
         <input
-          type="text"
-          class="form-control"
-          id="avgRating"
-          name="avgRating"
-          placeholder="Enter average rating"
+                type="text"
+                class="form-control"
+                id="avgRating"
+                name="avgRating"
+                placeholder="Enter average rating"
         />
     </div>
     <div class="form-group">
         <label for="artistName">Artist Name (e.g. Justin Bieber)</label>
         <input
-          type="text"
-          class="form-control"
-          id="artistName"
-          name="artistName"
-          placeholder="Enter artist name"/>
-        </div>
+                type="text"
+                class="form-control"
+                id="artistName"
+                name="artistName"
+                placeholder="Enter artist name"/>
+    </div>
     </br>
+    <div style="display: flex; justify-content: center;" class="button-container">
         <button type="submit" class="btn btn-primary">Search</button>
-      </form>
+    </div>
+</form>
+{% if songs is defined %}
+</br>
+<h2>Here are the search results:</h2>
+<h3>genre: {{genre}}</h3>
+<h3>avgRating: {{avgRating}}</h3>
+<h3>artistName: {{artistName}}</h3>
+</br>
 
+<div id="Nameresult">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr class="juicy-peach-gradient ">
+            <th>Title</th>
+            <th>Artist Name</th>
+            <th>Album</th>
+            <th>Genre</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for song in songs %}
+        <tr>
+            <td>{{ song['title'] }}</td>
+            <td>{{ song['fname'] + ' ' + song['lname']}}</td>
+            <td>{{ song['albumID'] }}</td>
+            <td>{{ song['genre'] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endif %}
 {% endblock %}
