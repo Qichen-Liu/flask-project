@@ -1,29 +1,43 @@
 {% extends "base.html" %}
-{% block title %}Friends{% endblock %}
+{% block title %}Follower{% endblock %}
 {% block content %}
 
     <br/>
-    <h2>Your friends</h2>
+    <h2>Your followings</h2>
     <table>
         <thead>
         <tr>
-            <th>Friend username</th>
+            <th>following username</th>
         </tr>
         </thead>
         <tbody>
-        {% for friend in friends %}
+        {% for following in followings %}
             <tr>
-                <td>{{ friend['friend'] }}</td>
+                <td>{{ following['follows'] }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-
-
+    <br/>
+    <h2>Your followers</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>followers username</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for follower in followers %}
+            <tr>
+                <td>{{ follower['follower'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
     <br/>
-    <h2>You can search for a user by username to add friend</h2>
+    <h2>You can search for a user by username to follow</h2>
     <br/>
     <form method="POST">
         <input type="hidden" name="post_id" value="1">
@@ -65,7 +79,7 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Nickname</th>
-            <th>Friend</th>
+            <th>Follow</th>
         </tr>
         </thead>
         <tbody>
@@ -75,20 +89,20 @@
                 <td>{{ u['fname'] }}</td>
                 <td>{{ u['lname'] }}</td>
                 <td>{{ u['nickname'] }}</td>
+
                 <td>
                     <form method="POST">
                         <input type="hidden" name="post_id" value="2">
                         <input type="hidden" name="user_id" value={{ u['username'] }}>
 
                         </br>
-                        <button type="submit" class="btn btn-primary">Add friend</button>
+                        <button type="submit" class="btn btn-primary">Follow</button>
                     </form>
-                </td>
-
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
 
 {% endblock %}
