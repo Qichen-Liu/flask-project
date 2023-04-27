@@ -692,7 +692,6 @@ def followers():
                 followings = cursor.fetchall()
                 cursor.close()
                 flash('You are following ' + followee, 'success')
-
                 return render_template('follower.html', user=current_user, followings=followings, followers=followers)
 
     return render_template('follower.html', user=current_user, followings=followings, followers=followers)
