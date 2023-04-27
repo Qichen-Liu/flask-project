@@ -1,88 +1,88 @@
 {% extends "base.html" %}
 {% block title %}New Content{% endblock %}
 {% block content %}
-<br/>
+    <br/>
     <h2>New Songs</h2>
     <style>
-table {
-  border-collapse: collapse;
-}
+        table {
+            border-collapse: collapse;
+        }
 
-th, td {
-  border: 1px solid black;
-  padding: 20px;
-  vertical-align: middle;
-  text-align: center;
-}
-</style>
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Genre</th>
-      <th>Release Date</th>
-      <th>URL</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for song in songs %}
-      <tr>
-        <td>{{ song['title'] }}</td>
-        <td>{{ song['genre'] }}</td>
-        <td>{{ song['releaseDate'] }}</td>
-        <td>{{ song['songURL'] }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+        th, td {
+            border: 1px solid black;
+            padding: 20px;
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+            <th>URL</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for song in songs %}
+            <tr>
+                <td>{{ song['title'] }}</td>
+                <td>{{ song['genre'] }}</td>
+                <td>{{ song['releaseDate'] }}</td>
+                <td>{{ song['songURL'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 
     <br/>
     <h2>New Song Reviews</h2>
-<table>
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Song Title</th>
-      <th>Review</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for review in songReviews %}
-      <tr>
-        <td>{{ review['username'] }}</td>
-        <td>{{ review['title'] }}</td>
-        <td>{{ review['reviewText'] }}</td>
-        <td>{{ review['reviewDate'] }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <table>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Song Title</th>
+            <th>Review</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for review in songReviews %}
+            <tr>
+                <td>{{ review['username'] }}</td>
+                <td>{{ review['title'] }}</td>
+                <td>{{ review['reviewText'] }}</td>
+                <td>{{ review['reviewDate'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 
     <br/>
     <h2>New Album Reviews</h2>
-<table>
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Album ID</th>
-      <th>Review</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for re in albumReviews %}
-      <tr>
-        <td>{{ re['username'] }}</td>
-        <td>{{ re['albumID'] }}</td>
-        <td>{{ re['reviewText'] }}</td>
-        <td>{{ re['reviewDate'] }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <table>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Album ID</th>
+            <th>Review</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for re in albumReviews %}
+            <tr>
+                <td>{{ re['username'] }}</td>
+                <td>{{ re['albumID'] }}</td>
+                <td>{{ re['reviewText'] }}</td>
+                <td>{{ re['reviewDate'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 
 {% endblock %}
