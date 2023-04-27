@@ -19,7 +19,22 @@
         </tbody>
     </table>
 
-
+    <br/>
+    <h2>People who want to add you to their friends</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for friend in friends %}
+            <tr>
+                <td>{{ friend['friend'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 
     <br/>

@@ -439,15 +439,22 @@ def rate():
 def friends():
     username = current_user.id
     cursor = conn.cursor()
-    query = 'SELECT username, fname, lname, nickname FROM user WHERE username = %s'
-    cursor.execute(query, (username))
-    user_profile = cursor.fetchone()
     friends_query = 'SELECT user2 AS friend FROM friend ' \
                     'WHERE user1 = %s AND acceptStatus = %s ' \
                     'UNION SELECT user1 AS friend FROM friend ' \
                     'WHERE user2 = %s AND acceptStatus = %s'
     cursor.execute(friends_query, (username, 'Accepted', username, 'Accepted'))
     user_friends = cursor.fetchall()
+
+    friend_request_query = 'SELECT user2 AS user FROM friend ' \
+                           'WHERE user1 = %s AND requestSentBy != %s AND acceptStatus = %s ' \
+                           'UNION SELECT user1 AS user FROM friend ' \
+                           'WHERE user2 = %s AND requestSentBy != %s AND acceptStatus = %s'
+    cursor.execute(friend_request_query, (username, username, 'Pending', username, username, 'Pending'))
+    friend_request_result = cursor.fetchone()
+
+
+
 
     if request.method == 'POST':
         post_id = request.form['post_id']
