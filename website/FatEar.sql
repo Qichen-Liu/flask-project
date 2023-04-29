@@ -1,6 +1,6 @@
 create table user (
     username varchar(10) not null,
-    pwd varchar(15),
+    pwd varchar(100),
     fname varchar(20) not null,
     lname varchar(20) not null,
     lastlogin date,
@@ -122,7 +122,7 @@ create table userFanOfArtist (
 );
 
 CREATE TABLE playlist (
-    listID varchar(10) not null,
+    listID int not null AUTO_INCREMENT,
     listName varchar(255) not null,
     createdAt datetime,
     createdBy varchar(10) not null,
@@ -131,7 +131,7 @@ CREATE TABLE playlist (
 );
 
 CREATE TABLE songInPlaylist (
-    listID varchar(10) not null,
+    listID int not null,
     songID varchar(10) not null,
   	primary key(listID, songID),
     foreign key (listID) references playlist(listID) on delete cascade,

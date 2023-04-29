@@ -69,7 +69,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, genre=genre)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -87,7 +87,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, genre=genre, avgRating=avgRating)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -103,7 +103,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, genre=genre, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -121,7 +121,7 @@ def searchSong():
             # stores the results in song
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, avgRating=avgRating)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -140,7 +140,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, avgRating=avgRating, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -155,7 +155,7 @@ def searchSong():
             # stores the results in songs
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, artistName=artistName)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -173,7 +173,7 @@ def searchSong():
             # stores the results in data
             songs = cursor.fetchall()
             if songs:
-                return render_template("home.html", songs=songs, user=current_user)
+                return render_template("home.html", songs=songs, user=current_user, genre=genre, artistName=artistName, avgRating=avgRating)
             else:
                 flash('No song found, please try again!', category='error')
                 return redirect(url_for('views.home'))
@@ -351,13 +351,15 @@ def rate():
     cursor.execute(query, (current_user.id))
     reviews = cursor.fetchall()
 
-    query = 'SELECT user.username, ratesong.songID, song.title, ratesong.stars FROM song Join ratesong ON song.songID ' \
-            '= ratesong.songID JOIN user ON ratesong.username = user.username WHERE user.username = %s'
+    query = 'SELECT user.username, rateSong.songID, song.title, rateSong.stars FROM song Join rateSong ON song.songID ' \
+            '= rateSong.songID JOIN user ON rateSong.username = user.username WHERE user.username = %s'
     cursor.execute(query, (current_user.id))
     rates = cursor.fetchall()
 
     if request.method == 'POST':
         post_id = request.form['post_id']
+
+        # search for a song by title
         if post_id == '1':
             song_title = request.form.get('title')
             if not song_title:
@@ -373,10 +375,11 @@ def rate():
             cursor.execute(query, (song_title))
             songs = cursor.fetchall()
             if songs:
-                songID = songs[0]
                 return render_template('rate.html', songs=songs, user=current_user)
             else:
                 flash('No songs found! Please change the title!', category='error')
+
+        # try to review a song
         elif post_id == '2':
             songID = request.form['song_id']
             review_text = request.form.get('reviewText')
@@ -390,7 +393,7 @@ def rate():
             # select to see if user already reviewed this song
             query = 'SELECT user.username, reviewSong.songID ' \
                     'FROM reviewSong JOIN user ON reviewSong.username = user.username ' \
-                    'WHERE user.username = %s AND rateSong.songID = %s'
+                    'WHERE user.username = %s AND reviewSong.songID = %s'
             cursor.execute(query, (current_user.id, songID))
             reviews = cursor.fetchall()
             if reviews:
@@ -400,6 +403,7 @@ def rate():
                 cursor.execute(update, (review_text, formatted_date, current_user.id, songID))
                 conn.commit()
                 cursor.close()
+                return redirect(url_for('auth.rate'))
             else:
                 # add review to database
                 ins = 'INSERT INTO reviewSong VALUES(%s, %s, %s, %s)'
@@ -407,11 +411,13 @@ def rate():
                 conn.commit()
                 cursor.close()
                 flash('Thank you for leaving a comment!', category='success')
-                return render_template('rate.html', user=current_user)
+                return redirect(url_for('auth.rate'))
 
+        # rate a song
         elif post_id == '3':
             songID = request.form['song_id']
             rating_star = request.form.get('stars')
+
             if not rating_star:
                 flash('Rating cannot be blank!', category='error')
                 return render_template('rate.html', user=current_user)
@@ -420,26 +426,27 @@ def rate():
             today = datetime.date.today()
             formatted_date = today.strftime('%Y-%m-%d')
             cursor = conn.cursor()
-            query = 'SELECT user.username, reviewSong.songID ' \
-                    'FROM ratesong JOIN user ON ratesong.username = user.username ' \
-                    'WHERE user.username = %s AND reviewSong.songID = %s'
+            query = 'SELECT user.username, rateSong.songID ' \
+                    'FROM rateSong JOIN user ON rateSong.username = user.username ' \
+                    'WHERE user.username = %s AND rateSong.songID = %s'
             cursor.execute(query, (current_user.id, songID))
             rates = cursor.fetchall()
             if rates:
                 flash('You already left a review for this song. The previous review will be overwritten', 'warning')
-                update = 'UPDATE ratesong SET reviewText = %s, reviewDate = %s' \
-                         'WHERE ratesong.username = %s AND reviewSong.songID = %s'
+                update = 'UPDATE rateSong SET stars = %s, ratingDate = %s ' \
+                         'WHERE rateSong.username = %s AND rateSong.songID = %s'
                 cursor.execute(update, (rating_star, formatted_date, current_user.id, songID))
                 conn.commit()
                 cursor.close()
+                return redirect(url_for('auth.rate'))
             else:
                 # add review to database
-                ins = 'INSERT INTO ratesong VALUES(%s, %s, %s, %s)'
+                ins = 'INSERT INTO rateSong VALUES(%s, %s, %s, %s)'
                 cursor.execute(ins, (current_user.id, songID, rating_star, formatted_date))
                 conn.commit()
                 cursor.close()
                 flash('Thank you for the rating!', category='success')
-                return render_template('rate.html', user=current_user)
+                return redirect(url_for('auth.rate'))
 
     return render_template('rate.html', user=current_user, rates=rates, reviews=reviews)
 
@@ -688,7 +695,6 @@ def profile():
                                    'WHERE user2 = %s AND requestSentBy != %s AND acceptStatus = %s'
             cursor.execute(friend_request_query, (username, username, 'Pending', username, username, 'Pending'))
             friend_request_result = cursor.fetchall()
-
             return render_template('profile.html', profile=user_profile, friends=user_friends,
                                    followings=followings, followers=followers, user=current_user,
                                    friend_request=friend_request_result)
@@ -697,6 +703,39 @@ def profile():
                            followings=followings, followers=followers, user=current_user,
                            friend_request=friend_request_result)
 
+@auth.route('/editProfile', methods=['GET', 'POST'])
+@login_required
+def editPrpfile():
+    username = current_user.id
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        fname = request.form.get('fname')
+        lname = request.form.get('lname')
+        nickname = request.form.get('nickname')
+        query = 'UPDATE user SET '
+
+        if not fname and not lname and not nickname:
+            flash('You cannot submit without change!', 'error')
+            return render_template('editProfile.html', user=current_user)
+
+        if fname:
+            query = query + 'fname = ' + '\'' + fname + '\'' + ', '
+        if lname:
+            query = query + 'lname = ' + '\'' +lname + '\'' + ', '
+        if nickname:
+            query = query + 'nickname = ' + '\'' + nickname + '\'' + ', '
+
+        query = query[:-2] + ' WHERE user.username = ' + '\'' + username + '\''
+
+        print(query)
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+        flash('You have successfully updated your profile!', 'success')
+        return redirect(url_for('auth.profile'))
+
+    return render_template('editProfile.html', user=current_user)
 
 @auth.route('/followers', methods=['GET', 'POST'])
 @login_required
@@ -765,7 +804,6 @@ def followers():
 
 @auth.route('/about', methods=['GET', 'POST'])
 def about():
-    username = current_user.id
     return render_template('about.html', user=current_user)
 
 @auth.route('/playlist', methods=['POST', 'GET'])
@@ -773,7 +811,7 @@ def about():
 def playlist():
     username = current_user.id
     cursor = conn.cursor()
-    # query current followers and followings
+    # query current playlist
     query = 'SELECT listID, listName, createdAT FROM playlist WHERE createdBy = %s'
     cursor.execute(query, (username))
     my_playlists = cursor.fetchall()
@@ -781,15 +819,74 @@ def playlist():
     if request.method == 'POST':
         post_id = request.form['post_id']
 
-        # if user want to see the songs
+        # show songs in the selected play list
         if post_id == '1':
             list_ID = request.form['list_id']
-            song_query = 'SELECT title, releaseDate, songURL ' \
-                         'FROM playlist NATURAL JOIN songInPlaylist NATURAL JOIN song ' \
+            song_query = 'SELECT title, fname, lname, songURL, listName ' \
+                         'FROM artist NATURAL JOIN artistPerformsSong NATURAL JOIN song ' \
+                         'NATURAL JOIN playlist NATURAL JOIN songInPlaylist ' \
                          'WHERE createdBy = %s AND listID = %s'
             cursor.execute(song_query, (username, list_ID))
+            songs_in_list = cursor.fetchall()
+            return render_template('songInList.html', user=current_user, songs=songs_in_list)
 
+        # create new play list
+        elif post_id == '2':
+            list_name = request.form.get("listName")
+            create_list_query = 'INSERT INTO playlist (listID, listName, createdAt, createdBy) VALUES (NULL, %s, %s, %s)'
+            now = datetime.datetime.now()
+            formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute(create_list_query, (list_name, formatted_time, username))
+            conn.commit()
+
+            # query current playlist (including newly created list)
+            query = 'SELECT listID, listName, createdAT FROM playlist WHERE createdBy = %s'
+            cursor.execute(query, (username))
+            my_playlists = cursor.fetchall()
+            cursor.close()
+
+            return render_template('songInList.html', user=current_user, playlists=my_playlists)
+
+        # search songs to add
+        elif post_id == '3':
+            song_title = request.form.get('title')
+            if not song_title:
+                flash('Song title cannot be blank!', category='error')
+                return render_template('rate.html', user=current_user)
+
+            #cursor = conn.cursor()
+
+            query = "SELECT title, fname, lname, song.songID" \
+                    "FROM song JOIN artistPerformsSong ON song.songID = artistPerformsSong.songID " \
+                    "JOIN songInAlbum on song.songID = songInAlbum.songID " \
+                    "JOIN artist ON artist.artistID = artistPerformsSong.artistID " \
+                    "WHERE title = %s"
+            cursor.execute(query, (song_title))
+            songs = cursor.fetchall()
+            if songs:
+                # display the search result
+                return render_template('playlist.html', songs=songs, user=current_user)
+            else:
+                flash('No songs found! Please change the title!', category='error')
+                return render_template('playlist.html', playlists=my_playlists, user=current_user)
+
+        # add song into the list
+        elif post_id == '4':
+            list_ID = request.form['list_id']
+            song_ID = request.form['songID']
+
+            # check if song already exists in the current list
+            query = 'SELECT songID FROM playlist WHERE listID = %s'
+            cursor.execute(query, (list_ID))
+            result = cursor.fetchone()
+            if result:
+                flash('This song is already in the list!', category='error')
+            else:
+                # insert the song into database
+                insert_song = 'INSERT INTO songInPlaylist (listID, songID) VALUES (%s, %s)'
+                cursor.execute(insert_song, (list_ID, song_ID))
+                conn.commit()
+                cursor.close()
+                return render_template('playlist.html', user=current_user, playlists=my_playlists)
 
     return render_template('playlist.html', user=current_user, playlists=my_playlists)
-
-

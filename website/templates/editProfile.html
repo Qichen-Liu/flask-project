@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+    <br/>
+    <h2>You can edit your profile</h2>
+    <br/>
+    <form method="POST">
+        <div class="form-group">
+            <label for="fname">First Name</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="fname"
+                    name="fname"
+                    placeholder="Enter first name"
+            />
+        </div>
+        <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="lname"
+                    name="lname"
+                    placeholder="Enter last name"
+            />
+        </div>
+        <div class="form-group">
+            <label for="nickname">Nick Name</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="nickname"
+                    name="nickname"
+                    placeholder="Enter nickname"/>
+        </div>
+        </br>
+        <div style="display: flex; justify-content: center;" class="button-container">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+{% endblock %}

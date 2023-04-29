@@ -17,17 +17,23 @@
             <tr>
                 <td>{{ playlist['listID'] }}</td>
                 <td>{{ playlist['listName'] }}</td>
-                <form method="POST">
+                <td>
+                    <form method="POST">
                         <input type="hidden" name="post_id" value="1">
                         <input type="hidden" name="list_id" value={{ playlist['listID'] }}>
-
-                        </br>
                         <button type="submit" class="btn btn-primary">Display</button>
                     </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    <td style=" padding:10px;">
+        <form method="POST">
+            <input type="hidden" name="post_id" value="2">
+            <button type="submit" class="btn btn-danger btn-sm" onclick="response()" id="createList">Create New List</button>
+        </form>
+    </td>
 
 {% endblock %}
