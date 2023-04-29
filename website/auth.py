@@ -801,12 +801,11 @@ def followers():
 
     return render_template('follower.html', user=current_user, followings=followings, followers=followers)
 
-
 @auth.route('/about', methods=['GET', 'POST'])
 def about():
     return render_template('about.html', user=current_user)
 
-@auth.route('/playlist', methods=['POST', 'GET'])
+@auth.route('/playlist', methods=['GET', 'POST'])
 @login_required
 def playlist():
     username = current_user.id
@@ -816,77 +815,86 @@ def playlist():
     cursor.execute(query, (username))
     my_playlists = cursor.fetchall()
 
+    songlists = []
+    for playlist in my_playlists:
+        list_ID = playlist['listID']
+        song_query = 'SELECT title, fname, lname, songURL, listName ' \
+                     'FROM artist NATURAL JOIN artistPerformsSong NATURAL JOIN song ' \
+                     'NATURAL JOIN playlist NATURAL JOIN songInPlaylist ' \
+                     'WHERE createdBy = %s AND listID = %s'
+        cursor.execute(song_query, (username, str(list_ID)))
+        songs = cursor.fetchall()
+        songlists.append(songs)
+
     if request.method == 'POST':
         post_id = request.form['post_id']
 
-        # show songs in the selected play list
+        # if user want to see the songs
         if post_id == '1':
-            list_ID = request.form['list_id']
-            song_query = 'SELECT title, fname, lname, songURL, listName ' \
-                         'FROM artist NATURAL JOIN artistPerformsSong NATURAL JOIN song ' \
-                         'NATURAL JOIN playlist NATURAL JOIN songInPlaylist ' \
-                         'WHERE createdBy = %s AND listID = %s'
-            cursor.execute(song_query, (username, list_ID))
-            songs_in_list = cursor.fetchall()
-            return render_template('songInList.html', user=current_user, songs=songs_in_list)
-
-        # create new play list
-        elif post_id == '2':
             list_name = request.form.get("listName")
+            if not list_name:
+                flash('list_name cannot be blank!', category='error')
+                return render_template('playlist.html', user=current_user, playlists=my_playlists, songlists=songlists)
+
             create_list_query = 'INSERT INTO playlist (listID, listName, createdAt, createdBy) VALUES (NULL, %s, %s, %s)'
             now = datetime.datetime.now()
             formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute(create_list_query, (list_name, formatted_time, username))
             conn.commit()
-
-            # query current playlist (including newly created list)
-            query = 'SELECT listID, listName, createdAT FROM playlist WHERE createdBy = %s'
-            cursor.execute(query, (username))
-            my_playlists = cursor.fetchall()
-            cursor.close()
-
-            return render_template('songInList.html', user=current_user, playlists=my_playlists)
-
-        # search songs to add
-        elif post_id == '3':
+            flash('Add playlist success!', category='success')
+            return redirect(url_for('auth.playlist'))
+        elif post_id == '2':
             song_title = request.form.get('title')
             if not song_title:
                 flash('Song title cannot be blank!', category='error')
-                return render_template('rate.html', user=current_user)
+                return render_template('playlist.html', user=current_user, playlists=my_playlists, songlists=songlists)
 
-            #cursor = conn.cursor()
-
-            query = "SELECT title, fname, lname, song.songID" \
+            query = "SELECT title, fname, lname, song.songID, genre " \
                     "FROM song JOIN artistPerformsSong ON song.songID = artistPerformsSong.songID " \
                     "JOIN songInAlbum on song.songID = songInAlbum.songID " \
                     "JOIN artist ON artist.artistID = artistPerformsSong.artistID " \
-                    "WHERE title = %s"
+                    "JOIN songGenre ON songGenre.songID = song.songID WHERE title = %s"
             cursor.execute(query, (song_title))
             songs = cursor.fetchall()
             if songs:
                 # display the search result
-                return render_template('playlist.html', songs=songs, user=current_user)
+                return render_template('playlist.html', user=current_user, playlists=my_playlists, songlists=songlists, songs=songs)
             else:
                 flash('No songs found! Please change the title!', category='error')
-                return render_template('playlist.html', playlists=my_playlists, user=current_user)
-
-        # add song into the list
-        elif post_id == '4':
+                return render_template('playlist.html', user=current_user, playlists=my_playlists, songlists=songlists)
+        elif post_id == '3':
             list_ID = request.form['list_id']
             song_ID = request.form['songID']
-
+            print(list_ID)
             # check if song already exists in the current list
-            query = 'SELECT songID FROM playlist WHERE listID = %s'
-            cursor.execute(query, (list_ID))
+            query = 'SELECT songID FROM songinplaylist WHERE listID = %s AND songID = %s'
+            cursor.execute(query, (list_ID,song_ID))
             result = cursor.fetchone()
             if result:
-                flash('This song is already in the list!', category='error')
+                flash('This song is already in the list!', category='success')
             else:
                 # insert the song into database
                 insert_song = 'INSERT INTO songInPlaylist (listID, songID) VALUES (%s, %s)'
                 cursor.execute(insert_song, (list_ID, song_ID))
                 conn.commit()
                 cursor.close()
-                return render_template('playlist.html', user=current_user, playlists=my_playlists)
+                flash('Add song success!', category='success')
+                return redirect(url_for('auth.playlist'))
+    cursor = conn.cursor()
+    # query current followers and followings
+    query = 'SELECT listID, listName, createdAT FROM playlist WHERE createdBy = %s'
+    cursor.execute(query, (username))
+    my_playlists = cursor.fetchall()
 
-    return render_template('playlist.html', user=current_user, playlists=my_playlists)
+    songlists = []
+    for playlist in my_playlists:
+        list_ID = playlist['listID']
+        song_query = 'SELECT title, fname, lname, songURL, listName ' \
+                     'FROM artist NATURAL JOIN artistPerformsSong NATURAL JOIN song ' \
+                     'NATURAL JOIN playlist NATURAL JOIN songInPlaylist ' \
+                     'WHERE createdBy = %s AND listID = %s'
+        cursor.execute(song_query, (username, str(list_ID)))
+        songs = cursor.fetchall()
+        songlists.append(songs)
+
+    return render_template('playlist.html', user=current_user, playlists=my_playlists, songlists=songlists)
