@@ -876,7 +876,7 @@ def playlist():
             song_ID = request.form['songID']
 
             # check if song already exists in the current list
-            query = 'SELECT songID FROM playlist WHERE listID = %s'
+            query = 'SELECT songID FROM songInPlaylist WHERE listID = %s'
             cursor.execute(query, (list_ID))
             result = cursor.fetchone()
             if result:
