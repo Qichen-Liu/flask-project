@@ -110,13 +110,13 @@
         <div class="card-header" id="headingOne"
              style="display: flex; justify-content: space-between;align-items: center;">
 
-            <div style="width = 33%"><h5>{{ playlists[i]['listID']}}</h5></div>
-            <div style="width = 33%"><h5>{{ playlists[i]['listName'] }}</h5></div>
-            <div style="width = 33%">
-                <button class="btn btn-primary"
-                        aria-controls="collapseOne">
-                    Add
-                </button>
+            <div style="width: 25%; text-align:center;"><h5>{{ playlists[i]['listID']}}</h5></div>
+            <div style="width: 33%; text-align:center;"><h5>{{ playlists[i]['listName'] }}</h5></div>
+            <div style="width: 30%; text-align:center;">
+{#                <button class="btn btn-primary"#}
+{#                        aria-controls="collapseOne">#}
+{#                    Add#}
+{#                </button>#}
                 <button class="btn btn-primary" data-toggle="collapse" data-target=#{{ playlists[i][
                 'listID']}} aria-controls="collapseOne">
                 Show
