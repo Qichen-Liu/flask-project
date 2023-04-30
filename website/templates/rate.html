@@ -30,7 +30,7 @@
                 </tbody>
             </table>
             {% else %}
-                <h6 style="text-align: center;">You have no rate yet</h6>
+            <h6 style="text-align: center;">You have no rate yet</h6>
             {% endif %}
         </div>
         <div class="table-wrapper" style=" width: 45%; margin-left: auto;">
@@ -53,7 +53,7 @@
                 </tbody>
             </table>
             {% else %}
-                 <h6 style="text-align: center;">You have no review yet</h6>
+            <h6 style="text-align: center;">You have no review yet</h6>
             {% endif %}
         </div>
     </div>
@@ -72,6 +72,7 @@
                     rates_review_btn.innerHTML = 'My review & rating'
                 }
             }
+
 </script>
 <br/>
 <form method="POST">
@@ -134,14 +135,20 @@
             <td>
                 <button type="button" class="btn deep-blue-gradient" id="rate" onclick="buttonClicked()">Rate</button>
                 <form method="POST" post_id="3" style="display: flex;align-items: center;">
-
-                    <input name="stars" type="stars" id="stars" placeholder="Enter your text here"
-                           style="width: 100%;display: none;"/>
+                    <select class="custom-select" name="stars" type="stars" id="stars" style="display:none">
+                        <option selected>Choose playlist</option>
+                        <option name="stars" value="1">1</option>
+                        <option name="stars" value="2">2</option>
+                        <option name="stars" value="3">3</option>
+                        <option name="stars" value="4">4</option>
+                        <option name="stars" value="5">5</option>
+                    </select>
                     <input type="hidden" name="post_id" value="3">
                     <input type="hidden" name="song_id" value="{{ song['songID'] }}">
                     <button type="submit" class="btn mean-fruit-gradient" id="rate_submit"
                             onclick="buttonClicked()" style="display: none;">Submit
                     </button>
+
                 </form>
             </td>
         </tr>
@@ -164,6 +171,7 @@
                 document.getElementById('rate_submit').style.display = 'block';
 
             })
+
 
 </script>
 {% endif %}

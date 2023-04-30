@@ -13,10 +13,10 @@ auth = Blueprint('auth', __name__)
 # config the database
 conn = pymysql.Connect(
     host="localhost",
-    port=8889,
+    port=3306,
     user="root",
-    password="root",
-    db="FatEar",
+    password="t00d00",
+    db="cs6083",
     charset="utf8mb4",
     cursorclass=pymysql.cursors.DictCursor
 )
