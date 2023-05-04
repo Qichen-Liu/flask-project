@@ -51,7 +51,8 @@
                     <select class="custom-select" name="list_id">
                         <option selected>Choose playlist</option>
                         {% for playlist in playlists %}
-                        <option name="list_id" value={{ playlist['listID']}}>{{ playlist['listName']}}</option>
+                        <option name="list_id" value={{ playlist[
+                        'listID']}}>{{ playlist['listName']}}</option>
                         {% endfor %}
                     </select>
                     <button type="submit" class="btn mean-fruit-gradient">Add</button>
@@ -113,14 +114,16 @@
             <div style="width = 33%"><h5>{{ playlists[i]['listID']}}</h5></div>
             <div style="width = 33%"><h5>{{ playlists[i]['listName'] }}</h5></div>
             <div style="width = 33%">
-                <button class="btn btn-primary" data-toggle="collapse" data-target=#{{ playlists[i]['listID']}} aria-controls="collapseOne">
+                <button class="btn btn-primary" data-toggle="collapse" data-target=#{{ playlists[i][
+                'listID']}} aria-controls="collapseOne">
                 Show
                 </button>
             </div>
 
         </div>
 
-        <div id={{ playlists[i]['listID']}} class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        <div id={{ playlists[i][
+        'listID']}} class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body" style="display: flex; justify-content: space-between;align-items: center;">
             <table class="table table-striped table-hover">
                 <thead class="thead-dark">
@@ -136,9 +139,9 @@
                 </tbody>
             </table>
         </div>
-        </div>
     </div>
-    {% endfor %}
+</div>
+{% endfor %}
 </div>
 
 <script type="text/javascript">
@@ -164,6 +167,7 @@
             show_add_song_btn_content.innerHTML = 'Search song to add'
         }
     }
+
 
 </script>
 
