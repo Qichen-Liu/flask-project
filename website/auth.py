@@ -13,10 +13,10 @@ auth = Blueprint('auth', __name__)
 # config the database
 conn = pymysql.Connect(
     host="localhost",
-    port=3306,
+    port=8889,
     user="root",
-    password="t00d00",
-    db="cs6083",
+    password="root",
+    db="FatEar",
     charset="utf8mb4",
     cursorclass=pymysql.cursors.DictCursor
 )
@@ -375,7 +375,7 @@ def rate():
             cursor.execute(query, (song_title))
             songs = cursor.fetchall()
             if songs:
-                return render_template('rate.html', songs=songs, user=current_user)
+                return render_template('rate.html', songs=songs, user=current_user, rates=rates, reviews=reviews)
             else:
                 flash('No songs found! Please change the title!', category='error')
 
